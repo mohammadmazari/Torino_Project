@@ -4,7 +4,7 @@ import React from "react";
 function Footer() {
   return (
     <footer>
-      <div className="flex flex-col md:flex-row gap-4 justify-between border-b  pb-3 border-gray-300 ">
+      <div className="flex flex-col md:flex-row gap-4 justify-between border-b px-3 pb-3 border-gray-300 ">
         <div className="flex gap-20 text-center justify-center items-center">
           <div>
             <h2 className="font-bold text-[18px] md:text-[24px]">تورینو</h2>

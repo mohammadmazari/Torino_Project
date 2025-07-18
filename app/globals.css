@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --globalColor: #28A745;
 }
 
 @theme inline {
@@ -23,6 +24,3 @@ button {
   cursor: pointer;
 }
 
-body{
-  background-color: #ededed;
-}
