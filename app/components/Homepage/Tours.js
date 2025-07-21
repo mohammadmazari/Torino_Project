@@ -7,7 +7,7 @@ function Tours({ data }) {
   console.log(data);
   return (
     <div className="px-3 mt-10">
-      <h3 className="font-medium text-[20px] mb-3">همه تور ها</h3>
+      <h3 className="font-medium text-[20px] my-4">همه تور ها</h3>
       {/* cards tours */}
 
       <div className="flex gap-5 flex-wrap justify-center">

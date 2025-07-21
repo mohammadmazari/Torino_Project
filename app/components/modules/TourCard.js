@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaCar } from "react-icons/fa";
 function TourCard({ tour }) {
   const startDate = new Date(tour.startDate).toLocaleDateString("fa-IR");
@@ -35,7 +36,7 @@ function TourCard({ tour }) {
 
         <div className="flex items-center gap-2 text-gray-600 text-xs mb-1">
           <span className="inline-flex items-center gap-1">
-            <FaCar size={18} className="text-green-700 ms-3"/>
+            <FaCar size={18} className="text-green-700 ms-3" />
             {tour.fleetVehicle === "Bus" ? "اتوبوس" : tour.fleetVehicle}
           </span>
         </div>
@@ -57,11 +58,11 @@ function TourCard({ tour }) {
         </div>
 
         <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100">
-          <span className="text-xs bg-green-700 p-2 rounded-md text-white px-3 font-bold">
-            قیمت
-          </span>
+          <Link href={`/tour/${tour.id}`} className="text-xs bg-green-700 p-2 rounded-md text-white px-3 font-bold">
+            رزور
+          </Link>
           <span className="text-lg font-bold text-blue-700">
-            {formattedPrice}{" "}
+            {formattedPrice}
             <span className="text-base font-normal">تومان</span>
           </span>
         </div>

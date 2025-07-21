@@ -1,23 +1,38 @@
 "use client";
-import { FaUser } from "react-icons/fa6";
+import { useEffect, useMemo, useState } from "react";
+// import { FaUser, FaUserAlt, FaAngleDown } from "react-icons/fa6";
+import { FaUser, FaUserAlt, FaAngleDown } from "react-icons/fa";
 import { RiMenu3Line } from "react-icons/ri";
-import { AiOutlineLogin } from "react-icons/ai";
-import { AiFillHome } from "react-icons/ai";
-import { PiAirplaneLight } from "react-icons/pi";
-import { PiSoundcloudLogoLight } from "react-icons/pi";
+import { AiOutlineLogin, AiFillHome } from "react-icons/ai";
+import { PiAirplaneLight, PiSoundcloudLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
-import { FaUserAlt } from "react-icons/fa";
-import { FaAngleDown } from "react-icons/fa6";
 import Link from "next/link";
 import SignInForm from "../auth/SignInForm";
+import useAuthClient from "@/app/Services/useAuthClient ";
+import { PiUserCircleFill } from "react-icons/pi";
+import { PiUser } from "react-icons/pi";
+import { RiLogoutCircleLine } from "react-icons/ri";
+import Cookies from "js-cookie";
 
-function Header({ Mobile }) {
+function Header() {
+  const [mobile, setMobile] = useState(null);
+  const userMobile = useAuthClient();
+  useEffect(() => {
+    setMobile(userMobile);
+  }, [userMobile]);
+
   const SignInhandler = () => {};
 
+  const LogoutHandler = () => {
+    Cookies.remove("accessToken");
+    document.location.reload();
+    console.log("object");
+  };
+
   return (
-    <header>
-      {/* Desctop Design */}
-      <div className="hidden md:flex justify-between ">
+    <header className="border-b border-gray-300 pb-4">
+      {/* Desktop Design */}
+      <div className="hidden md:flex justify-between">
         <div className="flex gap-10">
           <img
             className="w-[145px] h-[44px]"
@@ -32,49 +47,61 @@ function Header({ Mobile }) {
           </ul>
         </div>
 
-        {Mobile ? (
-          <div>
-            <div className="dropdown cursor-pointer">
-              <div tabIndex={0} role="button" className=" m-1">
-                <p className="flex items-center gap-2 text-green-600">
-                  <FaUserAlt />
-                  <span>{Mobile}</span>
-                  <FaAngleDown />
-                </p>
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-sm"
-              >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Item 2</a>
-                </li>
-              </ul>
+        {mobile ? (
+          <div className="dropdown w-[180px] cursor-pointer">
+            <div tabIndex={0} role="button" className="m-1">
+              <p className="flex items-center gap-2 text-green-600">
+                <FaUserAlt size={20} />
+                <span>{mobile}</span>
+                <FaAngleDown size={20} />
+              </p>
             </div>
+            <ul className="dropdown-content  menu bg-base-100 rounded-box z-1 w-full p-2 shadow-sm">
+              <li>
+                <Link
+                  href="/profile"
+                  className="text-sm justify-start gap-2 text-gray-800"
+                >
+                  <PiUserCircleFill size={18} />{" "}
+                  {mobile ? mobile : "کاربر مهمان"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/user/profile"
+                  className="text-gray-800 text-sm flex items-center justify-start gap-2"
+                >
+                  <PiUser size={18} /> حساب کاربری
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={LogoutHandler}
+                  className="text-red-800 text-sm justify-start gap-2"
+                >
+                  <RiLogoutCircleLine size={18} />
+                  خروج از حساب
+                </button>
+              </li>
+            </ul>
           </div>
         ) : (
-          <div>
-            <button
-              onClick={() => {
-                const modal = document.getElementById("my_modal_5");
-                modal.showModal();
-                SignInhandler();
-              }}
-              className="border-1 border-green-800 p-2 px-4 rounded-md text-green-700 flex items-center gap-2 "
-            >
-              <FaUser /> ورود و
-              <span className="border-r-green-800 border-[0.1em] h-[23px] "></span>{" "}
-              ثبت نام
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              const modal = document.getElementById("my_modal_5");
+              modal?.showModal();
+              SignInhandler();
+            }}
+            className="border border-green-800 p-2 px-4 rounded-md text-green-700 flex items-center gap-2"
+          >
+            <FaUser /> ورود و{" "}
+            <span className="border-r border-green-800 h-[23px]"></span> ثبت نام
+          </button>
         )}
       </div>
 
       {/* Mobile Design */}
-      <div className="flex md:hidden justify-between px-4">
+      <div className="flex md:hidden items-center justify-between px-4">
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">
@@ -91,10 +118,9 @@ function Header({ Mobile }) {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-            <ul className="menu flex gap-6 bg-base-200  min-h-full w-80 p-4 text-[16px] font-normal">
-              {/* Sidebar content here */}
+            <ul className="menu flex gap-6 bg-base-200 min-h-full w-80 p-4 text-[16px] font-normal">
               <li>
-                <Link href="#" className="text-green-800">
+                <Link href="/" className="text-green-800">
                   <AiFillHome size={20} /> صفحه اصلی
                 </Link>
               </li>
@@ -117,41 +143,54 @@ function Header({ Mobile }) {
           </div>
         </div>
 
-        {!Mobile ? (
-          <div className="">
-            <button
-              className="border border-green-800 rounded-lg p-2"
-              onClick={() => {
-                const modal = document.getElementById("my_modal_5");
-                modal.showModal();
-                SignInhandler();
-              }}
-            >
-              <AiOutlineLogin size={25} color="green" />
-            </button>
-          </div>
+        {!mobile ? (
+          <button
+            className="border border-green-800 rounded-lg p-2"
+            onClick={() => {
+              const modal = document.getElementById("my_modal_5");
+              modal?.showModal();
+              SignInhandler();
+            }}
+          >
+            <AiOutlineLogin size={25} color="green" />
+          </button>
         ) : (
-          <div>
-            <div className="dropdown">
-              <div tabIndex={0} role="button" className=" m-1">
-                <p className="flex items-center gap-2 text-green-600">
-                  <FaUserAlt />
-                  <span>{Mobile}</span>
-                  <FaAngleDown />
-                </p>
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-2 shadow-sm"
-              >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Item 2</a>
-                </li>
-              </ul>
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="m-1">
+              <p className="flex items-center gap-2 text-green-600">
+                <FaUserAlt />
+                <span>{mobile}</span>
+                <FaAngleDown />
+              </p>
             </div>
+            <ul className="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-1 shadow-sm">
+              <li>
+                <Link
+                  href="/profile"
+                  className="text-xs justify-start gap-2 gap-2 text-gray-800"
+                >
+                  <PiUserCircleFill size={18} />{" "}
+                  {mobile ? mobile : "کاربر مهمان"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/user/profile"
+                  className="text-gray-800 text-xs flex items-center justify-start gap-2"
+                >
+                  <PiUser size={18} /> حساب کاربری
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={LogoutHandler}
+                  className="text-red-800 text-xs justify-start gap-2"
+                >
+                  <RiLogoutCircleLine size={18} />
+                  خروج از حساب
+                </button>
+              </li>
+            </ul>
           </div>
         )}
       </div>

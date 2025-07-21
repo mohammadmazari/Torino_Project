@@ -9,14 +9,15 @@ const Auth = async () => {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    const data = response.data.mobile;
+    const data = response.data;
     if (data) {
       return data;
     } else {
       return null;
     }
   } catch (error) {
-    return error;
+    console.log(error);
+    return null;
   }
 };
 

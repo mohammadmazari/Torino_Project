@@ -4,11 +4,12 @@ import Tours from "../Homepage/Tours";
 import Informations from "../Homepage/Informations";
 import Features from "../Homepage/Features";
 import axiosInstance from "@/app/Services/Config";
-import { cookies } from "next/headers";
 import Auth from "@/app/Services/AuthPage";
 
 async function Homepage() {
-  const Mobile = await Auth();
+  const user = await Auth();
+  const mobile = user?.mobile;
+
   const ToursData = await (async () => {
     try {
       const response = await axiosInstance.get("/tour");
@@ -19,7 +20,7 @@ async function Homepage() {
   })();
 
   return (
-    <Layout Mobile={Mobile}>
+    <Layout Mobile={mobile}>
       <div className="container">
         <img
           src="/images/Homepage/slideHomepage.svg"
