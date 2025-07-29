@@ -64,7 +64,6 @@ function Tour(props) {
   const addtocarthandler = async (id) => {
     try {
       const token = getTokenFromCookie();
-      console.log(token);
       const response = await axiosInstance.put(
         `/basket/${id}`,
         {},

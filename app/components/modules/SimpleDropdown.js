@@ -1,20 +1,43 @@
-// components/SimpleDropdown.js
 'use client'
+import { useRef, useState } from 'react'
 
-import { useState } from 'react'
+const SimpleDropdown = ({
+  options,
+  defaultText = "انتخاب کنید",
+  defaultIcon = null,
+  sele,
+  value,
+}) => {
+  const [internalSelected, setInternalSelected] = useState({
+    label: defaultText,
+    icon: defaultIcon,
+  });
 
-const SimpleDropdown = ({ options, defaultText = "انتخاب کنید", defaultIcon = null }) => {
-  const [selected, setSelected] = useState({ label: defaultText, icon: defaultIcon })
+  const buttonRef = useRef(null); 
+
+  const selected = value || internalSelected;
+
+  const handleSelect = (option) => {
+    setInternalSelected(option);
+    sele && sele(option);
+
+
+    if (buttonRef.current) {
+      buttonRef.current.blur();
+    }
+  };
 
   return (
     <div className="dropdown w-full">
-      {/* دکمه اصلی که گزینه انتخاب شده را نمایش می‌دهد */}
-      <label tabIndex={0} className="btn flex w-full md:w-52 items-center m-0 gap-2 rounded-md  text-[16px] font-medium border-gray-400 ">
+      <label
+        tabIndex={0}
+        ref={buttonRef} // 👈 اتصال ref به اینجا
+        className="btn flex w-full md:w-52 items-center m-0 gap-2 rounded-md text-[16px] font-medium border-gray-400"
+      >
         {selected.icon && <span>{selected.icon}</span>}
         {selected.label}
       </label>
-      
-      {/* لیست گزینه‌ها */}
+
       <ul
         tabIndex={0}
         className="dropdown-content w-full max-w-full h-[255px] overflow-y-auto flex menu p-2 shadow bg-base-100 rounded-box"
@@ -22,7 +45,10 @@ const SimpleDropdown = ({ options, defaultText = "انتخاب کنید", defaul
       >
         {options.map((option, index) => (
           <li key={index} className="inline-block w-1/2">
-            <a onClick={() => setSelected(option)} className="flex items-center gap-2">
+            <a
+              onClick={() => handleSelect(option)}
+              className="flex items-center gap-2"
+            >
               {option.icon && <span>{option.icon}</span>}
               {option.label}
             </a>
@@ -33,4 +59,4 @@ const SimpleDropdown = ({ options, defaultText = "انتخاب کنید", defaul
   )
 }
 
-export default SimpleDropdown
+export default SimpleDropdown;

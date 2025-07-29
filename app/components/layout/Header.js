@@ -13,6 +13,8 @@ import { PiUserCircleFill } from "react-icons/pi";
 import { PiUser } from "react-icons/pi";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
+import ToasterAPI from "../modules/Toaster";
 
 function Header() {
   const [mobile, setMobile] = useState(null);
@@ -25,20 +27,30 @@ function Header() {
 
   const LogoutHandler = () => {
     Cookies.remove("accessToken");
-    document.location.reload();
-    console.log("object");
+    toast.success("خروج موفقیت آمیز بود.", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+    setTimeout(() => {
+      document.location.reload();
+    }, 3000);
   };
 
   return (
     <header className="border-b border-gray-300 pb-4">
+      <ToasterAPI />
       {/* Desktop Design */}
       <div className="hidden md:flex justify-between">
         <div className="flex gap-10">
-          <img
-            className="w-[145px] h-[44px]"
-            src="/images/Homepage/icon.svg"
-            alt="logo"
-          />
+          <Link href="/">
+            <img
+              className="w-[145px] h-[44px]"
+              src="/images/Homepage/icon.svg"
+              alt="logo"
+            />
+          </Link>
           <ul className="flex gap-5 font-medium items-center">
             <li>صفحه اصلی</li>
             <li>خدمات گردشکری</li>
@@ -56,7 +68,7 @@ function Header() {
                 <FaAngleDown size={20} />
               </p>
             </div>
-            <ul className="dropdown-content  menu bg-base-100 rounded-box z-1 w-full p-2 shadow-sm">
+            <ul className="dropdown-content  menu bg-base-100 rounded-box z-1 w-full p-2 py-4 shadow-sm">
               <li>
                 <Link
                   href="/profile"
@@ -94,7 +106,7 @@ function Header() {
             }}
             className="border border-green-800 p-2 px-4 rounded-md text-green-700 flex items-center gap-2"
           >
-            <FaUser /> ورود و{" "}
+            <FaUser /> ورود و
             <span className="border-r border-green-800 h-[23px]"></span> ثبت نام
           </button>
         )}

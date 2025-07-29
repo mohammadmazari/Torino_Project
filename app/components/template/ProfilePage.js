@@ -1,33 +1,70 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Layout from "../layout/Layout";
 import SideBarUser from "../modules/SideBarUser";
 import { GoPencil } from "react-icons/go";
-function ProfilePage() {
+import axiosInstance from "@/app/Services/Config";
+import Cookies from "js-cookie";
+
+function ProfilePage({ user }) {
   const [editPersonal, setEditPersonal] = useState(false);
   const [editBank, setEditBank] = useState(false);
   const [editAccount, setEditAccount] = useState(false);
+ 
 
   const { register, handleSubmit, reset, watch } = useForm({
     defaultValues: {
-      name: "مانیا رحیمی",
-      nationalId: "3727156723",
-      gender: "زن",
-      birthDate: "1383/10/17",
-      cardNumber: "6037991574658520",
-      shaba: "",
-      accountNumber: "",
-      email: "",
-      mobile: "09374511215",
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      gender: user?.gender,
+      birthDate: user?.birthDate,
+      nationalId: user?.nationalCode,
+      email: user?.email,
+      mobile: user?.mobile,
+      cardNumber: user?.payment?.debitCard_code,
+      shaba: user?.payment?.shaba_code,
+      accountNumber: user?.payment?.accountIdentifier,
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setEditPersonal(false);
     setEditBank(false);
     setEditAccount(false);
-    // اینجا می‌توانید داده‌ها را ذخیره کنید
+
+    // Normalize gender to English
+    let gender = data.gender;
+    if (gender === "زن" || gender === "female") gender = "female";
+    else if (gender === "مرد" || gender === "male") gender = "male";
+
+    const payload = {
+      mobile: data?.mobile,
+      email: data?.email,
+      firstName: data?.firstName,
+      lastName: data?.lastName,
+      gender: gender,
+      birthDate: data?.birthDate,
+      nationalCode: data?.nationalId,
+      payment: {
+        shaba_code: data?.shaba,
+        debitCard_code: data?.cardNumber,
+        accountIdentifier: data?.accountNumber,
+      },
+    };
+    console.log(payload);
+    try {
+      const token = Cookies.get("accessToken");
+      const res = await axiosInstance.put("/user/profile", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("✅ Profile updated:", res.data);
+    } catch (error) {
+      console.error("❌ Error updating profile:", error);
+    }
   };
 
   const values = watch();
@@ -44,9 +81,7 @@ function ProfilePage() {
     <Layout>
       <div className="p-4 md:p-8 space-y-6 mb-10" dir="rtl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div>
-            <SideBarUser />
-          </div>
+          <SideBarUser />
           <div className="w-full space-y-4 lg:col-span-2">
             {/* Account Info */}
             <div className="bg-white shadow border border-gray-300 rounded-xl p-4">
@@ -114,26 +149,31 @@ function ProfilePage() {
               {editPersonal ? (
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600"
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-2"
                 >
                   <input
-                    {...register("name")}
-                    placeholder="نام و نام خانوادگی"
+                    {...register("firstName")}
+                    placeholder="نام"
+                    className={inputClass}
+                  />
+                  <input
+                    {...register("lastName")}
+                    placeholder="نام خانوادگی"
+                    className={inputClass}
+                  />
+                  <input
+                    {...register("gender")}
+                    placeholder="جنسیت (male/female)"
+                    className={inputClass}
+                  />
+                  <input
+                    {...register("birthDate")}
+                    placeholder="تاریخ تولد (YYYY-MM-DD)"
                     className={inputClass}
                   />
                   <input
                     {...register("nationalId")}
                     placeholder="کدملی"
-                    className={inputClass}
-                  />
-                  <input
-                    {...register("gender")}
-                    placeholder="جنسیت"
-                    className={inputClass}
-                  />
-                  <input
-                    {...register("birthDate")}
-                    placeholder="تاریخ تولد"
                     className={inputClass}
                   />
                   <div className="col-span-2 flex gap-2 mt-2">
@@ -150,11 +190,12 @@ function ProfilePage() {
                   </div>
                 </form>
               ) : (
-                <div className=" grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mt-6 md:text-sm text-gray-600">
-                  <div>نام و نام خانوادگی: {values.name}</div>
-                  <div>کدملی: {values.nationalId}</div>
-                  <div>جنسیت: {values.gender}</div>
-                  <div>تاریخ تولد: {values.birthDate}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mt-6 md:text-sm text-gray-600">
+                  <div>نام: {values.firstName || "—"}</div>
+                  <div>نام خانوادگی: {values.lastName || "—"}</div>
+                  <div>جنسیت: {values.gender || "—"}</div>
+                  <div>تاریخ تولد: {values.birthDate || "—"}</div>
+                  <div>کدملی: {values.nationalId || "—"}</div>
                 </div>
               )}
             </div>
@@ -175,7 +216,7 @@ function ProfilePage() {
               {editBank ? (
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600"
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-2"
                 >
                   <input
                     {...register("cardNumber")}
@@ -207,7 +248,7 @@ function ProfilePage() {
                 </form>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm mt-6 text-gray-600">
-                  <div>شماره کارت: {values.cardNumber}</div>
+                  <div>شماره کارت: {values.cardNumber || "—"}</div>
                   <div>شماره شبا: {values.shaba || "—"}</div>
                   <div>شماره حساب: {values.accountNumber || "—"}</div>
                 </div>

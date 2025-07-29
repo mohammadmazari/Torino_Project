@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import Layout from "./components/layout/Layout";
 import Lottie from "lottie-react";
 import notfound from "../public/animtions/404.json";

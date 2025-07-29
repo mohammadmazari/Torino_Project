@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { IoIosClose } from "react-icons/io";
 
 import { useState } from "react";
+import { toast } from "sonner";
+
+import ToasterAPI from "../modules/Toaster";
 
 function SignInForm() {
   const [step, setStep] = useState("mobile"); // mobile | otp
@@ -31,11 +34,22 @@ function SignInForm() {
       if (response.ok) {
         setMobile(data.mobile);
         setStep("otp");
+        toast.success("کد تایید به شماره موبایل شما ارسال شد.", {
+          style: {
+            backgroundColor: "green",
+            color: "white",
+          },
+        });
       } else {
         alert("ارسال ناموفق بود.");
       }
     } catch (error) {
-      alert("خطا در ارتباط با سرور.");
+      toast.error("خطا در ارتباط با سرور.", {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
     }
   };
 
@@ -47,7 +61,12 @@ function SignInForm() {
         body: JSON.stringify({ mobile, code: data.otp }),
       });
       if (response.ok) {
-        alert("ورود موفقیت آمیز بود!");
+        toast.success("ورود موفقیت آمیز بود!", {
+          style: {
+            backgroundColor: "green",
+            color: "white",
+          },
+        });
         setStep("mobile");
         reset();
         resetOtp();
@@ -55,17 +74,31 @@ function SignInForm() {
         document.cookie = `accessToken=${data.accessToken}; path=/;`;
         window.location.reload();
       } else {
-        alert("کد وارد شده صحیح نیست.");
+        toast.error("کد وارد شده صحیح نیست.", {
+          style: {
+            backgroundColor: "red",
+            color: "white",
+          },
+        });
       }
     } catch (error) {
-      alert("خطا در ارتباط با سرور.");
+      toast.error("خطا در ارتباط با سرور.", {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
     }
   };
 
   return (
-    <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+    <dialog
+      id="my_modal_5"
+      className="modal pt-10 modal-bottom sm:modal-middle"
+    >
+      <ToasterAPI />
       <div className="modal-box" style={{ direction: "rtl" }}>
-        <div className="p-0 m-0 text-end">
+        <div className="p-0 m-0  text-end">
           <form method="dialog">
             <button>
               <IoIosClose size={20} />
