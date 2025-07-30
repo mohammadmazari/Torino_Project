@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import axiosInstance_Client from "@/app/Services/ConfigCleint";
 import { toast } from "sonner";
 
-function page(props) {
+function Page(props) {
   const { tour } = use(props.params);
   const [tourData, settourData] = useState(null);
   const [birthDate, setBirthDate] = useState(null);
@@ -237,4 +237,4 @@ function page(props) {
   );
 }
 
-export default page;
+export default Page;
