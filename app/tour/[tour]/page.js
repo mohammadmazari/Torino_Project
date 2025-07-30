@@ -3,8 +3,7 @@
 import Layout from "@/app/components/layout/Layout";
 import Loading from "@/app/components/modules/Loading/Loading";
 import toPersianDigits from "@/app/helper/toPersianDigits";
-import axiosInstance from "@/app/Services/Config";
-import { useEffect, useState, use } from "react";
+import { use, useEffect, useState } from "react";
 
 import {
   FaBus,
@@ -26,11 +25,10 @@ import Link from "next/link";
 import getTokenFromCookie from "@/app/helper/getTokenFromCookie ";
 import axiosInstance_Client from "@/app/Services/ConfigCleint";
 import { toast } from "sonner";
-function Tour(props) {
+
+function page(props) {
   const { tour: tourId } = use(props.params);
   const [tour, setTour] = useState(null);
-
-  console.log(tourId);
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -267,4 +265,4 @@ function Tour(props) {
   );
 }
 
-export default Tour;
+export default page;
