@@ -26,8 +26,8 @@ import getTokenFromCookie from "@/app/helper/getTokenFromCookie ";
 import axiosInstance_Client from "@/app/Services/ConfigCleint";
 import { toast } from "sonner";
 
-function page(props) {
-  const { tour: tourId } = props.params;
+function Page(props) {
+  const { tour: tourId } = use(props.params);
   const [tour, setTour] = useState(null);
 
   useEffect(() => {
@@ -35,7 +35,6 @@ function page(props) {
       try {
         const response = await axiosInstance_Client.get(`/tour/${tourId}`);
         setTour(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("خطا در دریافت تور:", error);
       }
@@ -265,4 +264,4 @@ function page(props) {
   );
 }
 
-export default page;
+export default Page;
