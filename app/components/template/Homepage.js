@@ -15,6 +15,7 @@ async function Homepage() {
       const response = await axiosInstance.get("/tour");
       return response.data;
     } catch (error) {
+      console.log(error)
       return null;
     }
   })();

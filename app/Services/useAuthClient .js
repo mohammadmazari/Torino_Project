@@ -1,8 +1,7 @@
-// app/Services/AuthClient.js
+
 "use client";
 
 import { useEffect, useState } from "react";
-import axiosInstance from "./Config";
 import axiosInstance_Client from "./ConfigCleint";
 
 

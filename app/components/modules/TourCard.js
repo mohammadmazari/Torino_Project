@@ -17,8 +17,8 @@ function TourCard({ tour }) {
     >
       <div className="relative">
         <img
-          src={tour.image}
-          alt={tour.title}
+          src={tour?.image}
+          alt={tour?.title}
           className="w-full h-32 sm:h-36 object-cover transition-transform duration-300 hover:scale-105"
         />
         <span className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] px-3 py-1 rounded-full shadow">
