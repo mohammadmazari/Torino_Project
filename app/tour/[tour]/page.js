@@ -27,7 +27,7 @@ import axiosInstance_Client from "@/app/Services/ConfigCleint";
 import { toast } from "sonner";
 
 function page(props) {
-  const { tour: tourId } = use(props.params);
+  const { tour: tourId } = props.params;
   const [tour, setTour] = useState(null);
 
   useEffect(() => {
