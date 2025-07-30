@@ -71,7 +71,7 @@ function Header() {
             <ul className="dropdown-content  menu bg-base-100 rounded-box z-1 w-full p-2 py-4 shadow-sm">
               <li>
                 <Link
-                  href="/profile"
+                  href="/user/profile"
                   className="text-sm justify-start gap-2 text-gray-800"
                 >
                   <PiUserCircleFill size={18} />{" "}
@@ -178,7 +178,7 @@ function Header() {
             <ul className="dropdown-content menu bg-base-100 rounded-box z-1 w-full p-1 shadow-sm">
               <li>
                 <Link
-                  href="/profile"
+                  href="/user/profile"
                   className="text-xs justify-start gap-2 gap-2 text-gray-800"
                 >
                   <PiUserCircleFill size={18} />{" "}

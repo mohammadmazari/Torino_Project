@@ -4,12 +4,14 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import Layout from "@/app/components/layout/Layout";
 import Loading from "@/app/components/modules/Loading/Loading";
-import axiosInstance from "@/app/Services/Config";
+
 import { use, useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import getTokenFromCookie from "@/app/helper/getTokenFromCookie ";
 import { useRouter } from "next/navigation";
+import axiosInstance_Client from "@/app/Services/ConfigCleint";
+import { toast } from "sonner";
 
 function page(props) {
   const { tour } = use(props.params);
@@ -20,7 +22,7 @@ function page(props) {
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const res = await axiosInstance.get(`/tour/${tour}`);
+        const res = await axiosInstance_Client.get(`/tour/${tour}`);
         settourData(res.data);
       } catch (error) {
         console.log(error);
@@ -37,12 +39,11 @@ function page(props) {
   } = useForm();
 
   const onSubmit = async (data) => {
-    data.birthDate = birthDate?.format("YYYY/MM/DD"); // اضافه کن
-    console.log(data.birthDate);
+    data.birthDate = birthDate?.format("YYYY/MM/DD"); 
 
     try {
       const token = getTokenFromCookie();
-      const response = await axiosInstance.post(
+      const response = await axiosInstance_Client.post(
         "/order",
         {
           nationalCode: data.nationalCode,
@@ -57,11 +58,21 @@ function page(props) {
           },
         }
       );
-      alert("سفارش با موفقیت ثبت شد!");
-      router.push("/")
+      toast.success("سفارش با موفقیت ثبت شد!", {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
+      });
+      router.push("/");
     } catch (error) {
       console.error("خطا:", error.response?.data || error.message);
-      alert("ارسال سفارش با خطا مواجه شد.");
+      toast.error("ارسال سفارش با خطا مواجه شد.", {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
     }
   };
 

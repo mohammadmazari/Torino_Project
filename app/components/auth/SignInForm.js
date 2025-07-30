@@ -6,9 +6,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import ToasterAPI from "../modules/Toaster";
+import axiosInstance_Client from "@/app/Services/ConfigCleint";
 
 function SignInForm() {
-  const [step, setStep] = useState("mobile"); // mobile | otp
+  const [step, setStep] = useState("mobile"); 
   const [mobile, setMobile] = useState("");
   const {
     register,
@@ -26,20 +27,19 @@ function SignInForm() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("http://localhost:6500/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile: data.mobile }),
+      const response = await axiosInstance_Client.post("/auth/send-otp", {
+        mobile: data.mobile,
       });
-      if (response.ok) {
+      if (response.status === 200) {
         setMobile(data.mobile);
         setStep("otp");
-        toast.success("کد تایید به شماره موبایل شما ارسال شد.", {
+        toast.success(`کد تایید ${response.data.code}`, {
           style: {
             backgroundColor: "green",
             color: "white",
           },
         });
+    
       } else {
         alert("ارسال ناموفق بود.");
       }
@@ -53,43 +53,46 @@ function SignInForm() {
     }
   };
 
-  const onSubmitOtp = async (data) => {
-    try {
-      const response = await fetch("http://localhost:6500/auth/check-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile, code: data.otp }),
+ const onSubmitOtp = async (data) => {
+  try {
+    const response = await axiosInstance_Client.post("/auth/check-otp", {
+      mobile,
+      code: data.otp,
+    });
+
+    if (response.status === 200 && response.data.accessToken) {
+      toast.success("ورود موفقیت آمیز بود!", {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
       });
-      if (response.ok) {
-        toast.success("ورود موفقیت آمیز بود!", {
-          style: {
-            backgroundColor: "green",
-            color: "white",
-          },
-        });
-        setStep("mobile");
-        reset();
-        resetOtp();
-        const data = await response.json();
-        document.cookie = `accessToken=${data.accessToken}; path=/;`;
-        window.location.reload();
-      } else {
-        toast.error("کد وارد شده صحیح نیست.", {
-          style: {
-            backgroundColor: "red",
-            color: "white",
-          },
-        });
-      }
-    } catch (error) {
-      toast.error("خطا در ارتباط با سرور.", {
+
+      setStep("mobile");
+      reset();
+      resetOtp();
+
+      const { accessToken } = response.data;
+      document.cookie = `accessToken=${accessToken}; path=/;`;
+      window.location.reload();
+    } else {
+      toast.error("کد وارد شده صحیح نیست.", {
         style: {
           backgroundColor: "red",
           color: "white",
         },
       });
     }
-  };
+  } catch (error) {
+    toast.error("خطا در ارتباط با سرور.", {
+      style: {
+        backgroundColor: "red",
+        color: "white",
+      },
+    });
+  }
+};
+
 
   return (
     <dialog

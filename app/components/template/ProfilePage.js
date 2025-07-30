@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Layout from "../layout/Layout";
 import SideBarUser from "../modules/SideBarUser";
 import { GoPencil } from "react-icons/go";
 import axiosInstance from "@/app/Services/Config";
 import Cookies from "js-cookie";
+import axiosInstance_Client from "@/app/Services/ConfigCleint";
+import { toast } from "sonner";
 
 function ProfilePage({ user }) {
   const [editPersonal, setEditPersonal] = useState(false);
   const [editBank, setEditBank] = useState(false);
   const [editAccount, setEditAccount] = useState(false);
- 
 
   const { register, handleSubmit, reset, watch } = useForm({
     defaultValues: {
@@ -56,14 +57,21 @@ function ProfilePage({ user }) {
     console.log(payload);
     try {
       const token = Cookies.get("accessToken");
-      const res = await axiosInstance.put("/user/profile", payload, {
+      const res = await axiosInstance_Client.put("/user/profile", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       console.log("✅ Profile updated:", res.data);
+      toast.success("پروفایل با موفقیت بروزرسانی شد", {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
+      });
     } catch (error) {
       console.error("❌ Error updating profile:", error);
+      toast.error("مشکلی به وجود امد دوباره امتحان کنید");
     }
   };
 

@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import axiosInstance from "./Config";
+import axiosInstance_Client from "./ConfigCleint";
 
 
 const useAuthClient = () => {
@@ -11,13 +12,13 @@ const useAuthClient = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // خواندن کوکی از document.cookie (اگر non-HttpOnly باشه)
+      
         const match = document.cookie.match(/accessToken=([^;]+)/);
         const token = match?.[1];
 
         if (!token) return;
 
-        const response = await axiosInstance.get("user/profile/", {
+        const response = await axiosInstance_Client.get("/user/profile/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

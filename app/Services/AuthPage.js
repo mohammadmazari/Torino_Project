@@ -4,7 +4,7 @@ const Auth = async () => {
   try {
     const cookiesStore = cookies();
     const token = cookiesStore.get("accessToken");
-    const response = await axiosInstance.get("user/profile/", {
+    const response = await axiosInstance.get("/user/profile/", {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },

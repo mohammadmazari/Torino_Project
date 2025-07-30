@@ -24,15 +24,20 @@ import { FaCarAlt } from "react-icons/fa";
 import { LuUsersRound } from "react-icons/lu";
 import Link from "next/link";
 import getTokenFromCookie from "@/app/helper/getTokenFromCookie ";
+import axiosInstance_Client from "@/app/Services/ConfigCleint";
+import { toast } from "sonner";
 function Tour(props) {
   const { tour: tourId } = use(props.params);
   const [tour, setTour] = useState(null);
 
+  console.log(tourId);
+
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const response = await axiosInstance.get(`/tour/${tourId}`);
+        const response = await axiosInstance_Client.get(`/tour/${tourId}`);
         setTour(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("خطا در دریافت تور:", error);
       }
@@ -43,7 +48,7 @@ function Tour(props) {
 
   function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString("fa-IR");
+    return date?.toLocaleDateString("fa-IR");
   }
   const formatDate2 = (isoDate) => {
     return new Date(isoDate).toLocaleDateString("fa-IR-u-nu-fa", {
@@ -64,7 +69,7 @@ function Tour(props) {
   const addtocarthandler = async (id) => {
     try {
       const token = getTokenFromCookie();
-      const response = await axiosInstance.put(
+      const response = await axiosInstance_Client.put(
         `/basket/${id}`,
         {},
         {
@@ -73,11 +78,21 @@ function Tour(props) {
           },
         }
       );
-      console.log(response);
-      alert("سفارش با موفقیت ثبت شد!");
+
+      toast.success("سفارش با موفقیت ثبت شد!", {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
+      });
     } catch (error) {
       console.error("خطا:", error.response?.data || error.message);
-      alert("ارسال سفارش با خطا مواجه شد.");
+      toast.error("ارسال سفارش با خطا مواجه شد.", {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
     }
   };
 
@@ -90,7 +105,7 @@ function Tour(props) {
               <img
                 src={tour.image}
                 alt={tour.title}
-                className="rounded-xl w-full h-4/5 object-cover mb-4 object-cover  md:w-2/6 "
+                className="rounded-xl w-full h-4/5  mb-4 object-cover  md:w-2/6 "
               />
 
               <div className="text-right md:flex-grow">
@@ -101,7 +116,7 @@ function Tour(props) {
                 <div className="text-sm text-gray-600 mb-3 flex items-center gap-2 md:hidden">
                   <IoLocationSharp className="text-gray-500" />
                   <span>
-                    از {tour.origin.name} به {tour.destination.name}
+                    از {tour.origin?.name} به {tour.destination?.name}
                   </span>
                 </div>
                 <div className="ms-2 text-green-700 pb-7 font-[20px]">
@@ -154,7 +169,7 @@ function Tour(props) {
                     <PiMedal />
                   </p>
                 </div>
-                {tour.options.length > 0 && (
+                {tour.options && (
                   <div className="flex items-center gap-1 text-sm text-gray-600 mt-2 md:hidden">
                     <MdOutlineFastfood />
                     <span>{tour.options.join(" + ")}</span>
